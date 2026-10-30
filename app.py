@@ -20,22 +20,25 @@ from car_data_master import (get_all_makes, get_models_for_make,
                               ENGINE_CC_OPTIONS, AUTO_HEAVY_MODELS,
                               DIESEL_MODELS, CC_PRICE_FACTOR)
 
-# ─── Auto-train if model not found (first run on cloud) ──────────────────────
-import os as _os
-if not _os.path.exists("model/car_price_model.pkl"):
-    import subprocess as _sp
-    import sys as _sys
-    with st.spinner("First run: generating dataset and training model... (takes ~60 seconds)"):
-        _sp.run([_sys.executable, "generate_dataset.py"], check=True)
-        _sp.run([_sys.executable, "model.py"], check=True)
-
-
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Car Price Predictor Pakistan",
     page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
+)
+
+# ─── Auto-train if model not found (first run on cloud) ──────────────────────
+import os as _os
+if not _os.path.exists("model/car_price_model.pkl"):
+    import subprocess as _sp
+    import sys as _sys
+    _placeholder = st.empty()
+    _placeholder.info("First run: generating dataset and training model. Please wait 60-90 seconds...")
+    _sp.run([_sys.executable, "generate_dataset.py"], check=True)
+    _sp.run([_sys.executable, "model.py"], check=True)
+    _placeholder.empty()
+    st.rerun()
 )
 
 # ─── CSS — clean, flat, no gradients, no emojis ──────────────────────────────
