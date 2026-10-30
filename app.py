@@ -29,6 +29,7 @@ if not _os.path.exists("model/car_price_model.pkl"):
         _sp.run([_sys.executable, "generate_dataset.py"], check=True)
         _sp.run([_sys.executable, "model.py"], check=True)
 
+
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Car Price Predictor Pakistan",
