@@ -14,13 +14,12 @@ from reportlab.lib.units import cm
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer,
                                  Table, TableStyle, HRFlowable)
 from reportlab.lib.enums import TA_CENTER
-from model import predict_price, load_model
 from car_data_master import (get_all_makes, get_models_for_make,
                               get_base_price, get_engine_cc,
                               ENGINE_CC_OPTIONS, AUTO_HEAVY_MODELS,
                               DIESEL_MODELS, CC_PRICE_FACTOR)
 
-# ─── Page Config ─────────────────────────────────────────────────────────────
+# ─── Page Config — MUST be first Streamlit call ──────────────────────────────
 st.set_page_config(
     page_title="Car Price Predictor Pakistan",
     page_icon="",
@@ -29,17 +28,19 @@ st.set_page_config(
 )
 
 # ─── Auto-train if model not found (first run on cloud) ──────────────────────
-import os as _os
-if not _os.path.exists("model/car_price_model.pkl"):
-    import subprocess as _sp
-    import sys as _sys
-    _placeholder = st.empty()
-    _placeholder.info("First run: generating dataset and training model. Please wait 60-90 seconds...")
-    _sp.run([_sys.executable, "generate_dataset.py"], check=True)
-    _sp.run([_sys.executable, "model.py"], check=True)
-    _placeholder.empty()
+if not os.path.exists("model/car_price_model.pkl"):
+    import subprocess, sys
+    st.info("First run: generating dataset and training model. Please wait 90 seconds...")
+    progress = st.progress(0, text="Generating dataset...")
+    subprocess.run([sys.executable, "generate_dataset.py"], check=True)
+    progress.progress(50, text="Training model...")
+    subprocess.run([sys.executable, "model.py"], check=True)
+    progress.progress(100, text="Done!")
+    st.success("Model trained! Loading app...")
     st.rerun()
-)
+
+# ─── Now safe to import model functions ──────────────────────────────────────
+from model import predict_price, load_model
 
 # ─── CSS — clean, flat, no gradients, no emojis ──────────────────────────────
 st.markdown("""
