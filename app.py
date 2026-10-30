@@ -27,18 +27,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ─── Auto-train if model not found (first run on cloud) ──────────────────────
-if not os.path.exists("model/car_price_model.pkl"):
-    import subprocess, sys
-    st.info("First run: generating dataset and training model. Please wait 90 seconds...")
-    progress = st.progress(0, text="Generating dataset...")
-    subprocess.run([sys.executable, "generate_dataset.py"], check=True)
-    progress.progress(50, text="Training model...")
-    subprocess.run([sys.executable, "model.py"], check=True)
-    progress.progress(100, text="Done!")
-    st.success("Model trained! Loading app...")
-    st.rerun()
-
 # ─── Now safe to import model functions ──────────────────────────────────────
 from model import predict_price, load_model
 

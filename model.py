@@ -137,7 +137,7 @@ def train_model():
                 "cv_std":  round(cv_scores.std(), 4),
             },
             "algorithm": "GradientBoostingRegressor"
-        }, f)
+        }, f, protocol=4)  # protocol=4 compatible with Python 3.8+
 
     print("\nModel saved to model/car_price_model.pkl")
     return model, encoders
