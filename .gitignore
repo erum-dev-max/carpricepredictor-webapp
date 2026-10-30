@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+dataset/car_data_synthetic.csv
+*.bat
+analyze_real_data.py
+final_test.py
+verify_model.py
